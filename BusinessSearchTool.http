@@ -1,0 +1,6 @@
+@BusinessSearchTool_HostAddress = http://localhost:5003
+
+GET {{BusinessSearchTool_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

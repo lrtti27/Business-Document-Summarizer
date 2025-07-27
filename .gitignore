@@ -1,0 +1,40 @@
+# Build results
+bin/
+obj/
+out/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+*.userprefs
+
+# IDE settings
+.vscode/
+.idea/
+*.sln.docstates
+
+# Environment files
+.env
+*.env.*
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ASP.NET specific
+wwwroot/static-assets/
+wwwroot/node_modules/
+
+# Rider
+*.DotSettings.user
+
+# Coverage results
+TestResults/
+coverage/
+
+# Publish outputs
+publish/
