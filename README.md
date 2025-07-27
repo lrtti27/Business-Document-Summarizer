@@ -21,3 +21,6 @@ A simple and powerful web tool that uses OpenAI's GPT API to summarize long busi
 ```bash
 git clone https://github.com/yourusername/business-doc-summarizer.git
 cd business-doc-summarizer
+```
+
+### 2. Working on making a stable way to build it easily :)
