@@ -6,7 +6,6 @@ A simple and powerful web tool that uses OpenAI's GPT API to summarize long busi
 
 - 🔍 **Summarize Any Business Text:** Paste in long-form content and get a concise summary using GPT-3.5-turbo.
 - ⚙️ **Fast & Lightweight:** Built with React + .NET for a snappy frontend and scalable backend.
-- 🔐 **API Key Hidden:** Uses environment variables to keep your OpenAI key safe.
 - 🌐 **CORS Configured:** Seamless integration between frontend and backend on localhost or deployable.
 
 ## 🛠 Tech Stack
