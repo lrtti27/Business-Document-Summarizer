@@ -13,13 +13,40 @@ public class BusinessSearchController : ControllerBase
         _openAiService = openAiService;
     }
     
-    [HttpPost("summarize")]
-    public async Task<IActionResult> SummarizeDocument([FromBody] DocumentRequest request)
+    [HttpPost("uploadText")]
+    public async Task<IActionResult> UploadTextAndSummarize([FromBody] DocumentRequest request)
     {
-        
+        if (string.IsNullOrWhiteSpace(request.Text))
+        {
+            return BadRequest(new { error = "Text cannot be empty." });
+        }
+
+        return await SummarizePlainText(request.Text);
+    }
+
+    [HttpPost("uploadFile")]
+    public async Task<IActionResult> UploadFileAndSummarize([FromForm] DocumentUploadRequest request)
+    {
+        if (request.File == null || request.File.Length == 0)
+        {
+            return BadRequest(new { error = "No file uploaded" });
+        }
+        //Extract the text from the document into plaintext
+        string fileText;
+        using (var reader = new StreamReader(request.File.OpenReadStream()))
+        {
+            fileText = await reader.ReadToEndAsync();
+        }
+
+        //Send request to openAI
+        return await SummarizePlainText(fileText);
+    }
+
+    private async Task<IActionResult> SummarizePlainText(string text)
+    {
         try
         {
-            var summary = await _openAiService.SummarizeText(request.Text);
+            var summary = await _openAiService.SummarizeText(text);
             return Ok(new { Summary = summary });
         }
         catch (Exception ex)
