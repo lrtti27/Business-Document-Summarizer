@@ -1,5 +1,26 @@
 import React, {use, useState} from 'react'
 import axios from 'axios'
+import {Line} from 'react-chartjs-2'
+import {
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Legend,
+    Title,
+    Tooltip,
+} from "chart.js";
+
+ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Legend,
+    Title,
+    Tooltip
+);
 
 function DocumentSummarizer() {
     const [text , setText] = useState('');
@@ -7,7 +28,7 @@ function DocumentSummarizer() {
     const [loading , setLoading] = useState(false);
     const [file , setFile] = useState(null);
     const [fileLoading , setFileLoading] = useState(false);
-    
+    const [chartData , setChartData] = useState(null);
     
     const handleSummarize = async () => {
         setLoading(true);
@@ -47,10 +68,17 @@ function DocumentSummarizer() {
                     },
                 }
             );
-            setSummary(response.data.summary);
+            console.log("Original chart data form OpenAI : ");
+            console.log(response.data.chartData);
+            const chartDataJSON = JSON.parse(response.data.chartData);
+
+            console.log("JSON chart data form OpenAI : ");
+            console.log(chartDataJSON);
+            setChartData(chartDataJSON);
         } catch (error) {
             console.error('Error uploading file:', error);
             setSummary('Error uploading file.');
+            setChartData(null);
         }
 
         setFileLoading(false);
@@ -75,7 +103,7 @@ function DocumentSummarizer() {
             onChange={(e) => setText(e.target.value)}
         />
                     <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded self-start"
+                        className="bg-blue-500 text-white px-4 py-2 rounded self-center"
                         onClick={handleSummarize}
                         disabled={loading}
                     >
@@ -88,12 +116,16 @@ function DocumentSummarizer() {
                     <h1 className="text-2xl font-bold mb-6">File Upload</h1>
                     <input
                         type="file"
-                        accept=".txt,.docx,.pdf"
+                        //Accept excel files
+                        accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                         onChange={handleFileChange}
                         className="mb-4"
                     />
+                    <p className="text-sm text-gray-600 mb-4">
+                        Accepted File Types : .xls , .xlsx
+                    </p>
                     <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded self-start"
+                        className="bg-blue-500 text-white px-4 py-2 rounded self-center"
                         onClick={handleFileUpload}
                         disabled={!file}
                     >
@@ -102,11 +134,11 @@ function DocumentSummarizer() {
                 </div>
             </div>
             {/* Summary Output */}
-            {summary && (
+            {chartData && (
                 <div className="mt-8">
-                    <h2 className="text-xl font-semibold mb-2">Summary</h2>
-                    <div className="w-full border border-gray-700 p-2 mb-4 whitespace-pre-wrap bg-gray-900 text-white rounded">
-                    {summary}
+                    <h2 className="text-xl font-semibold mb-2">Financial Chart</h2>
+                    <div className="bg-white rounded p-4 shadow">
+                        <Line data={chartData} />
                     </div>
                 </div>
             )}

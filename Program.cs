@@ -1,5 +1,6 @@
 using BusinessSearchTool;
 using dotenv.net;
+using OfficeOpenXml;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddCors(options =>
 });
 
 
+
 var app = builder.Build();
 
 app.UseCors("AllowReactApp");
@@ -38,5 +40,7 @@ if (app.Environment.IsDevelopment())
 app.MapControllers();
 
 app.MapGet("/", () => "Hello World");
+
+ExcelPackage.License.SetNonCommercialPersonal("Leonardo Ricotti");
 
 app.Run();
