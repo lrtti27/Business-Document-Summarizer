@@ -9,6 +9,8 @@ A simple and powerful web tool that uses OpenAI's GPT API to summarize turn exce
 -  **Summarize Excel Documents:** Submit excel files and receieve AI powered insights in a visual format - powered by charts.js.
 -  **Fast & Lightweight:** Built with React + .NET for a snappy frontend and scalable backend.
 
+![Chart Image](images/chart.png)
+
 ## Tech Stack
 
 - **Frontend:** React (Vite)
