@@ -1,4 +1,5 @@
 using BusinessSearchTool;
+using BusinessSearchTool.Services;
 using dotenv.net;
 using OfficeOpenXml;
 
@@ -12,6 +13,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 DotEnv.Load();
 builder.Services.AddSingleton(new OpenAIService(Environment.GetEnvironmentVariable("OPENAI_API_KEY")));
+builder.Services.AddSingleton<ExcelParserService>();
+builder.Services.AddSingleton<PromptBuilderService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
