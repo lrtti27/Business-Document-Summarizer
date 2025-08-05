@@ -1,20 +1,21 @@
-# 🧠 Business Document Summarizer
+# Excel Document Insight Visualizer - Graph / Visual Creation
 
-A simple and powerful web tool that uses OpenAI's GPT API to summarize long business documents into short, digestible summaries.
+Add a picture here, Leonard.
 
-## ✨ Features
+A simple and powerful web tool that uses OpenAI's GPT API to summarize turn excel spreadsheets into easily digestible graphs - no excel knowledge needed.
 
-- 🔍 **Summarize Any Business Text:** Paste in long-form content and get a concise summary using GPT-3.5-turbo.
-- ⚙️ **Fast & Lightweight:** Built with React + .NET for a snappy frontend and scalable backend.
-- 🌐 **CORS Configured:** Seamless integration between frontend and backend on localhost or deployable.
+## Features
 
-## 🛠 Tech Stack
+-  **Summarize Excel Documents:** Submit excel files and receieve AI powered insights in a visual format - powered by charts.js.
+-  **Fast & Lightweight:** Built with React + .NET for a snappy frontend and scalable backend.
+
+## Tech Stack
 
 - **Frontend:** React (Vite)
 - **Backend:** .NET Web API
 - **AI:** OpenAI GPT-3.5-turbo API
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Clone the repository
 ```bash
@@ -22,4 +23,4 @@ git clone https://github.com/yourusername/business-doc-summarizer.git
 cd business-doc-summarizer
 ```
 
-### 2. Working on making a stable way to build it easily :)
+### 2. Uhh for now just run dotnet run and npm run dev
