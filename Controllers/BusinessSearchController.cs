@@ -1,3 +1,5 @@
+using System.Runtime.Intrinsics.Arm;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
@@ -39,9 +41,23 @@ public class BusinessSearchController : ControllerBase
         {
             return BadRequest(new { error = "Only .xlsx files are supported." });
         }
+        
+        //As soon as user uploads file, check hash to avoid redundant processing
+        
 
         using var stream = new MemoryStream();
         await request.File.CopyToAsync(stream);
+
+        byte[] fileBytes = stream.ToArray();
+        
+        string hash = Cache.ComputeHash(fileBytes);
+
+        // Try cache first
+        if (Cache.FileHashCache.TryGetValue(hash, out var cachedResponse))
+        {
+            Console.WriteLine("✅ Cache hit for hash: " + hash);
+            return Ok(new { ChartData = cachedResponse });
+        }
 
         using var package = new ExcelPackage(stream);
         var worksheet = package.Workbook.Worksheets.FirstOrDefault();
@@ -65,7 +81,10 @@ public class BusinessSearchController : ControllerBase
 
             data.Add(rowData);
         }
-
+        
+        //Pre processed data
+        
+        /*
         var financialData = new Dictionary<string, Dictionary<string, string>>();
 
         //Populate the dictionary with all row vals in first column of data
@@ -82,11 +101,19 @@ public class BusinessSearchController : ControllerBase
 
             financialData.Add(rowKey, rowDict);
         }
+        */
+        
+        //Try passing unprocessed data directly to openAI
 
 
         //Create plaintext representation of the data
         var payloadText = new StringBuilder();
-        payloadText.AppendLine("Below is financial data.");
+        payloadText.AppendLine("Below is excel spreadsheet data given as all rows.");
+        payloadText.AppendLine("Bear in mind that this includes ALL ROWS");
+        payloadText.AppendLine("So a given row may contain all headers, such as example : ID , FirstName , LastName");
+        payloadText.AppendLine("A given row may contain a row header followed by data, such as example : Revenue ,  100,000 , 200,000 , ...");
+        payloadText.AppendLine("It is up to you to interpret this data in a way that is structured logically.");
+        /*
         foreach ((string metric, Dictionary<string, string> metricValues) in financialData)
         {
             payloadText.AppendLine($"Metric: {metric}");
@@ -96,6 +123,16 @@ public class BusinessSearchController : ControllerBase
             }
 
             payloadText.AppendLine();
+        }
+        */
+
+        foreach (List<string> row in data)
+        {
+            payloadText.AppendLine("Row : ");
+            foreach (string entry in row)
+            {
+                payloadText.AppendLine(entry);
+            }
         }
 
         payloadText.AppendLine("Based on this data, generate JSON formatted output for chart.js.");
@@ -125,7 +162,7 @@ public class BusinessSearchController : ControllerBase
 
         Console.WriteLine(payloadText);
         var response = await SummarizePlainTextNoHTTP(payloadText.ToString());
-        
+        Cache.FileHashCache.TryAdd(hash, response);
         return Ok(new { ChartData = response });
     }
 
@@ -156,4 +193,6 @@ public class BusinessSearchController : ControllerBase
             return null;  // Or throw if you want the calling method to handle it
         }
     }
+
+    
 }
