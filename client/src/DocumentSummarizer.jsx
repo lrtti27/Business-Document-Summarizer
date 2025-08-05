@@ -1,6 +1,7 @@
 import React, {use, useState} from 'react'
 import axios from 'axios'
-import {Line} from 'react-chartjs-2'
+import { Line } from 'react-chartjs-2'
+import { useDropzone } from 'react-dropzone'
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -29,6 +30,7 @@ function DocumentSummarizer() {
     const [file , setFile] = useState(null);
     const [fileLoading , setFileLoading] = useState(false);
     const [chartData , setChartData] = useState(null);
+    const [dragging , setDragging] = useState(false);
     
     const handleSummarize = async () => {
         setLoading(true);
@@ -49,6 +51,21 @@ function DocumentSummarizer() {
             setFile(e.target.files[0]);
         }
     };
+    
+    const onDrop = (acceptedFiles) => {
+        if(acceptedFiles && acceptedFiles.length > 0) {
+            setFile(acceptedFiles[0]);
+        }
+    }
+    
+    const { getRootProps , getInputProps , isDragActive } = useDropzone({
+        onDrop,
+        multiple : false,
+        accept : {
+            'application/vnd.ms-excel': [],
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [],
+        }
+    });
     
     const handleFileUpload = async () => {
         if(!file)   return;
@@ -114,13 +131,21 @@ function DocumentSummarizer() {
                 {/* Right side: file input + summarize file button */}
                 <div className="flex flex-col flex-1">
                     <h1 className="text-2xl font-bold mb-6">File Upload</h1>
-                    <input
-                        type="file"
-                        //Accept excel files
-                        accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                        onChange={handleFileChange}
-                        className="mb-4"
-                    />
+                    
+                    <div
+                        {...getRootProps()}
+                        className={`border-dashed border-2 p-6 text-center rounded-md transition-colors cursor-pointer 
+                        ${isDragActive ? 'bg-blue-100 border-blue-400' : 'border-gray-300'}`}
+                    >
+                        <input {...getInputProps()} />
+                        {
+                            isDragActive
+                                ? <p>Drop the file here...</p> 
+                                : <p>Drag and drop an Excel file here , or click to select.</p>
+                        }
+                        {file && <p className="mt-2 text-sm text-green-600">Selected: {file.name}</p>}
+                        
+                    </div>
                     <p className="text-sm text-gray-600 mb-4">
                         Accepted File Types : .xls , .xlsx
                     </p>
