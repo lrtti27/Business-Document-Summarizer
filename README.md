@@ -1,6 +1,6 @@
 # Excel Document Insight Visualizer - Graph / Visual Creation
 
-Add a picture here, Leonard.
+![Home Image](images/doc-summarizer-home.png)
 
 A simple and powerful web tool that uses OpenAI's GPT API to summarize turn excel spreadsheets into easily digestible graphs - no excel knowledge needed.
 
